@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List Transactions</title>
+</head>
+<body>
+    <form action="" method="get">{% csrf_token %}
+        <table border = 2>
+            <thead>
+                <tr>
+                    <th COLSPAN="4">
+                     <h3><br>List of All  Transactions</h3>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <th>Amount</th>
+                    <th>Txid</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            {% for transaction in list_transactions %}
+                <tr>
+                    <td> {{transaction.address}} </td>
+                    <td> {{transaction.amount}} </td>
+                    <td> {{transaction.txid}}  </td>
+                    <td> {{transaction.category}} </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    </form>
+    <button type="submit" id="back_button_id" class="btn btn-success" value="submit"><a href="{% url 'generate_address' %}">Back</a></button>
+
+</body>
+</html>

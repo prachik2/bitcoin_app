@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Private Key Address</title>
+</head>
+<body>
+    <p> Hello , Private Key Address </p>
+    <form action="" method="post">{% csrf_token %}
+        <div>
+            <label> Address:{{ private_key_address }}</label>
+        </div>
+        <button type="submit" id="back_button_id" class="btn btn-success" value="submit"><a href="{% url 'generate_address' %}">Back</a></button>
+
+    </form>
+</body>
+</html>

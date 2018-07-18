@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Address</title>
+</head>
+<body>
+    <p> Hello , Here You can Generate Bitcoin Address </p>
+    <form action="" method="POST">{% csrf_token %}
+        <div>
+            <div class="button">
+            <button type="submit" id="generate_btn" class="btn btn-success" form = "generate_address_form" value="submit"><a href="{% url 'generate_address' %}">Generate BitCoin Address</a></button>
+
+            <label>
+            <textarea id="msg" name="generate_address" placeholder="Bitcoin Address:"> {{ bitcoin_address }} </textarea></label><br/>
+            </div>
+            <br/>
+            <button type="submit" id="generate_private_key" class="btn btn-success" value="submit"><a href="{% url 'private_key_address' bitcoin_address %}">Private Key</a></button>
+            <button type="submit" id="generate_public_key" class="btn btn-success" value="submit"><a href="{% url 'public_key_address' bitcoin_address %}">Public Key</a></button>
+            <button type="submit" id="list_transactions" class="btn btn-success" value="submit"><a href="{% url 'list_transactions' %}">List Transactions</a></button>
+            <button type="submit" id="transfer_amount" class="btn btn-success" value="submit"><a href="{% url 'transfer_amount'%}">Transfer</a></button>
+
+
+        </div>
+    </form>
+</body>
+</html>

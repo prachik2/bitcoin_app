@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transfer Amount</title>
+</head>
+<body>
+    <p> Hello , </p>
+    <form action="" id = "transfer_amount" method="post" name="form">{% csrf_token %}
+        <div>
+            {{ form }}
+            <button type="submit" id="submit_btn" class="btn btn-success" form = "transfer_amount" value="submit" >Submit</button>
+            Txid: {{ transaction }}
+            After Mining:{{generate_block_txid}}
+        </div>
+        <button type="submit" id="back_button_id" class="btn btn-success" value="submit"><a href="{% url 'generate_address' %}">Back</a></button>
+
+
+    <table border = 3>
+    <thead>
+    <tr>
+        <th COLSPAN="3">
+         <h3><br>Unspent transactions</h3>
+      </th>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <th>Amount</th>
+        <th>Txid</th>
+    </tr>
+    </thead>
+        {% for unspent in list_unspent %}
+        <tr>
+            <td> {{ unspent.address }}</td>
+            <td> {{ unspent.amount }}</td>
+            <td> {{ unspent.txid }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+     </form>
+</body>
+</html>
