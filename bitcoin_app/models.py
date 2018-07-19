@@ -21,4 +21,7 @@ class GenerateAddress(models.Model):
 class TransferAmount(models.Model):
     from_address = models.CharField(max_length=256)
     to_address = models.CharField(max_length=256)
-    amount_field = models.IntegerField()
+    amount_field = models.DecimalField(max_digits=20, decimal_places=10)
+
+    def save(self, *args, **kwargs):
+        super(TransferAmount, self).save(*args, **kwargs)

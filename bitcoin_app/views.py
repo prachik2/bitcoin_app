@@ -4,9 +4,6 @@ import requests
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
-# Create your views here.
-# from django.urls import reverse
-
 from bitcoin_app.forms import GenerateAddressForm, TransferAmount, TransferAmountForm
 from bitcoin_app.models import GenerateAddress
 
@@ -89,17 +86,25 @@ def transfer_amount(request, template_name = "transfer_amount.html"):
             from_address = cleaned_data['from_address']
             amount_field = cleaned_data['amount_field']
 
-            transferred_data = TransferAmount.objects.create(from_address= from_address, to_address=to_address, amount_field=amount_field)
-            transferred_data.save()
-
             payload['method'] = "sendtoaddress"
             payload['params'] = [to_address, amount_field]
             response = requests.post(url, data=json.dumps(payload))
             json_data = json.loads(response.text)
             generate_block_txid = generate_block()
             unspent = list_unspent()
-            # list_transaction = list_transactions()
-            # raw_transaction= get_raw_transaction(json_data['result'])
+            raw_transaction = get_raw_transaction(json_data['result'])
+            for tx in raw_transaction['vout'] :
+
+                if not (tx['scriptPubKey']['addresses'] == to_address):
+                    transferred_data_remaining = TransferAmount.objects.create(from_address=from_address,to_address=tx['scriptPubKey']['addresses'],
+                                                                           amount_field=tx['value'])
+                    transferred_data_remaining.save()
+
+                else :
+                    transferred_data_send = TransferAmount.objects.create(from_address=from_address, to_address=to_address,
+                                                                     amount_field=amount_field)
+
+                    transferred_data_send.save()
 
             return render(request, template_name, {"form": form,'list_unspent':unspent, 'generate_block_txid':generate_block_txid, "transaction": json_data['result']})
 
@@ -107,15 +112,12 @@ def transfer_amount(request, template_name = "transfer_amount.html"):
         form = TransferAmountForm()
         unspent = list_unspent()
 
-        # payload['method'] = "listunspent"
-        # response = requests.post(url, data=json.dumps(payload))
-        # json_data = json.loads(response.text)
         return render(request, template_name, {'form': form, 'list_unspent':unspent})
 
 
 def get_raw_transaction(txid):
     payload['method']= "getrawtransaction"
-    payload['params'] = [txid]
+    payload['params'] = [txid, 1]
 
     response = requests.post(url, data=json.dumps(payload))
     json_data = json.loads(response.text)
@@ -128,4 +130,12 @@ def generate_block():
     response = requests.post(url, data=json.dumps(payload))
     json_data = json.loads(response.text)
 
+    return json_data['result']
+
+def list_received_by_address():
+    payload['method'] = "listreceivedbyaddress"
+    payload["params"] = [1]
+
+    response = requests.post(url, data=json.dumps(payload))
+    json_data = json.loads(response.text)
     return json_data['result']
